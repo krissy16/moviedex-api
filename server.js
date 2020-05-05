@@ -31,7 +31,7 @@ app.get('/movie', (req, res)=>{
         movies = movies.filter( movie => movie.genre.toLowerCase().includes(genre.toLowerCase()))
     }
     if(country){
-        movies = movies.filter( movie => movie.genre.toLowerCase().includes(country.toLowerCase()))
+        movies = movies.filter( movie => movie.country.toLowerCase().includes(country.toLowerCase()))
     }
     if(avg_vote){
         movies=movies.filter( movie => movie.avg_vote>=Number(avg_vote))
