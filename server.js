@@ -7,7 +7,8 @@ const movieData = require('./movie-data.json')
 
 const app = express()
 
-app.use(morgan('dev'))
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common'
+app.use(morgan(morganSetting))
 app.use(helmet())
 app.use(cors())
 
@@ -31,7 +32,7 @@ app.get('/movie', (req, res)=>{
         movies = movies.filter( movie => movie.genre.toLowerCase().includes(genre.toLowerCase()))
     }
     if(country){
-        movies = movies.filter( movie => movie.genre.toLowerCase().includes(country.toLowerCase()))
+        movies = movies.filter( movie => movie.country.toLowerCase().includes(country.toLowerCase()))
     }
     if(avg_vote){
         movies=movies.filter( movie => movie.avg_vote>=Number(avg_vote))
@@ -41,7 +42,18 @@ app.get('/movie', (req, res)=>{
 
 })
 
+app.use((error, req, res, next) => {
+    let response
+    if (process.env.NODE_ENV === 'production') {
+      response = { error: { message: 'server error' }}
+    } else {
+      response = { error }
+    }
+    res.status(500).json(response)
+  })
+  
+const PORT = process.env.PORT || 8000
 
-app.listen('8000', ()=>{
+app.listen(PORT, ()=>{
     console.log('App started on port 8000')
 })
